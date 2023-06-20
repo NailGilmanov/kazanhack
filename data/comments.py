@@ -12,10 +12,10 @@ class Comment(SqlAlchemyBase, SerializerMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    event_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("events.id"))
-    event = sqlalchemy.orm.relationship('Events', backref='events')
+    expend_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("expend.id"))
+    expend = sqlalchemy.orm.relationship('Expend', backref='expend')
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     user = sqlalchemy.orm.relationship('Users', backref='users')
 
-    event = orm.relation('Events')
+    expend = orm.relation('Expend')
     user = orm.relation('User')

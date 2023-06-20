@@ -7,11 +7,11 @@ import requests
 from flask import jsonify
 
 from forms.user import RegisterForm, LoginForm
-from forms.events import EventsForm
+from forms.expends import ExpendsForm
 from forms.comments import CommentsForm
 
 from data.users import User
-from data.events import Events
+from data.expend import Expend
 from data.comments import Comment
 
 from flask_login import LoginManager, login_user
@@ -37,14 +37,6 @@ def is_integer(n):
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        return redirect('/success')
-    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/register/<string:username>/<string:password>/<string:password_again>/<string:description>', methods=['GET', 'POST'])
@@ -259,7 +251,7 @@ def get_booking_event(user_id):
 
 
 def main():
-    db_session.global_init('db/database.sqlite')
+    db_session.global_init('C:/Users/Admin/PycharmProjects/kazanhack/db/database.sqlite')
     serve(app, host='0.0.0.0', port=5000)
 
 
