@@ -12,5 +12,4 @@ class Arrival(SqlAlchemyBase, SerializerMixin):
                            primary_key=True, autoincrement=True)
     date = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.Integer)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    user = orm.relation('User')
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)

@@ -13,5 +13,4 @@ class Expend(SqlAlchemyBase, SerializerMixin):
     date = sqlalchemy.Column(sqlalchemy.String)
     category = sqlalchemy.Column(sqlalchemy.Integer)
     price = sqlalchemy.Column(sqlalchemy.Integer)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    user = orm.relation('User')
+    user_id = sqlalchemy.Column(sqlalchemy.Integer)

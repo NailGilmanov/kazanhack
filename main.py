@@ -38,8 +38,8 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/register/<string:username>/<string:password>/<string:password_again>/<string:description>', methods=['GET', 'POST'])
-def valid_register_data(username, password, password_again, description):
+@app.route('/register/<string:username>/<string:password>/<string:password_again>', methods=['GET', 'POST'])
+def valid_register_data(username, password, password_again):
     form = RegisterForm()
     if form.validate_on_submit():
         if password != password_again:
@@ -53,9 +53,7 @@ def valid_register_data(username, password, password_again, description):
     # Добавление в базу данных
     db_sess = db_session.create_session()
     user = User(
-        name=username,
-        about=description,
-        booking=''
+        name=username
     )
     user.set_password(password)
     db_sess.add(user)
@@ -250,7 +248,7 @@ def get_booking_event(user_id):
 
 
 def main():
-    db_session.global_init('C:/Users/Admin/PycharmProjects/kazanhack/db/database.sqlite')
+    db_session.global_init('db/database.sqlite')
     serve(app, host='0.0.0.0', port=5000)
 
 
