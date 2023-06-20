@@ -75,21 +75,17 @@ def valid_login_data(username, password):
     return jsonify('false')
 
 
-@app.route("/new_event/<string:title>/<string:content>/<string:date>/<string:time>/<string:place>/<int:category>/<int:userid>",
+@app.route("/new_expend/<int:id>/<string:date>/<int:category>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_event(title, content, date, time, place, category, userid):
-    add_rate(userid, 50)
+def new_expend(id, date, category, price, user_id):
     session = db_session.create_session()
-
-    event = Events()
-    event.title = title
-    event.content = content
-    event.place = place
-    event.date = date
-    event.time = time
-    event.category = category
-    event.userid = userid
-    session.add(event)
+    expend = Expend()
+    expend.id = id
+    expend.date = date
+    expend.category = category
+    expend.price = price
+    expend.user_id = user_id
+    session.add(expend)
     session.commit()
     return jsonify('true')
     # print(form.errors)
@@ -106,19 +102,11 @@ def get_user(id):
     return jsonify("{" + id + name + about + rate + "}")
 
 
+@app.route('/get_username/<int:id>')
 def get_username(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == id).first()
     return user.name
-
-
-@app.route('/get_user_events/<int:id>')
-def get_user_events(id):
-    db_sess = db_session.create_session()
-    events = db_sess.query(Events).filter(Events.userid == id).all()
-    events_ids = [event.id for event in events]
-    response = [get_event(i) for i in events_ids]
-    return jsonify(str(response))
 
 
 def get_event(id):
@@ -139,7 +127,6 @@ def get_event(id):
 @app.route("/new_comment/<int:event_id>/<int:user_id>/<string:content>",
            methods=['GET', 'POST'])
 def new_comment(event_id, user_id, content):
-    add_rate(user_id, 50)
     db_sess = db_session.create_session()
 
     comment = Comment()
@@ -204,18 +191,8 @@ def get_events():
     return jsonify(str(response))
 
 
-
-def add_rate(user_id, rate):
-    db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.id == user_id).first()
-    user.rate += rate
-    db_sess.commit()
-    return jsonify('true')
-
-
 @app.route('/booking_event/<int:event_id>/<int:user_id>')
 def booking_event(event_id, user_id):
-    add_rate(user_id, 10)
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == user_id).first()
     user.booking = str(user.booking)
