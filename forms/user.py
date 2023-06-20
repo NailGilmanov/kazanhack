@@ -3,16 +3,16 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextA
 from wtforms.validators import DataRequired
 
 
+
 class RegisterForm(FlaskForm):
+    nickname = StringField('Никнейм', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    name = StringField('Имя пользователя')
-    about = TextAreaField("Немного о себе")
-    submit = SubmitField('Зарегистрироваться')
+    submit = SubmitField('Подтвердить')
 
 
 class LoginForm(FlaskForm):
-    name = StringField('Имя Пользователя')
+    nickname = StringField('Никнейм', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')

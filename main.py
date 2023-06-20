@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template, redirect
 from data import db_session
 from waitress import serve
 from flask_cors import CORS, cross_origin
@@ -37,6 +37,14 @@ def is_integer(n):
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect('/success')
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/register/<string:username>/<string:password>/<string:password_again>/<string:description>', methods=['GET', 'POST'])
