@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, render_template, redirect
 from data import db_session
 from waitress import serve
@@ -148,9 +149,33 @@ def get_arrival(user_id):
     return result
 
 
+@app.route("/get_history/<int:user_id>")
+def get_history(user_id):
+    db_sess = db_session.create_session()
+    arrivals = db_sess.query(Arrival).filter(Arrival.user_id == user_id).all()
+    expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
+    result = []
+    for arrival in arrivals:
+        id = str(arrival.id)
+        date = arrival.date
+        price = f'+{arrival.price}'
+        user_id = str(arrival.user_id)
+        result.append([id, date, price, user_id])
+    for expend in expends:
+        id = str(expend.id)
+        date = expend.date
+        category = str(expend.category)
+        price = f"-{expend.price}"
+        user_id = str(expend.user_id)
+        result.append([id, date, category, price, user_id])
+    result = sorted(result, key=lambda x: x[1], reverse=True)
+    return result
+
+
+
 def main():
     db_session.global_init('db/database.sqlite')
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='127.0.0.1', port=5000)
 
 
 if __name__ == '__main__':
