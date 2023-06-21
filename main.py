@@ -103,7 +103,10 @@ def get_username(id):
 def get_user(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == id).first()
-    return [user.id, user.name, user.about]
+    userid = f'"id":{str(user.id)}, '
+    username = f'"name":"{str(user.name)}", '
+    userabout = f'"about":"{str(user.about)}"'
+    return '{' + userid + username + userabout + '}'
 
 
 @app.route("/get_expend/<int:user_id>")
@@ -170,7 +173,6 @@ def get_history(user_id):
         result.append([id, date, category, price, user_id])
     result = sorted(result, key=lambda x: x[1], reverse=True)
     return result
-
 
 
 def main():
