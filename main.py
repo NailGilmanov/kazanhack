@@ -89,7 +89,6 @@ def new_expend(id, date, category, price, user_id):
     session.add(expend)
     session.commit()
     return jsonify('true')
-    # print(form.errors)
 
 
 @app.route('/get_username/<int:id>')
@@ -119,12 +118,11 @@ def get_expend(user_id):
         user_id = {"user_id": int(expend.user_id)}
         result.append([id, date, category, price, user_id])
     return result
-    # ЭТО СПИСОК СДЕЛАЙ FOR
 
 
 @app.route("/new_arrival/<int:id>/<string:date>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_arrival(id, date, category, price, user_id):
+def new_arrival(id, date, price, user_id):
     session = db_session.create_session()
     arrival = Arrival()
     arrival.id = id
@@ -134,19 +132,20 @@ def new_arrival(id, date, category, price, user_id):
     session.add(arrival)
     session.commit()
     return jsonify('true')
-    # print(form.errors)
 
 
-# @app.route("/get_arrival/<int:user_id>",
-#            methods=['GET', 'POST'])
-# def get_arrival(id):
-#     db_sess = db_session.create_session()
-#     arrival = db_sess.query(Expend).filter(Expend.id == id).first()
-#     id = {"id": int(arrival.id)}
-#     date = {"date":f"{arrival.date}"}
-#     price = {"price": int(arrival.price)}
-#     user_id = {"user_id": int(arrival.user_id)}
-#     return id | date | price | user_id
+@app.route("/get_arrival/<int:user_id>")
+def get_arrival(user_id):
+    db_sess = db_session.create_session()
+    arrivals = db_sess.query(Arrival).filter(Arrival.user_id == user_id).all()
+    result = []
+    for arrival in arrivals:
+        id = {"id": int(arrival.id)}
+        date = {"date":f"{arrival.date}"}
+        price = {"price": int(arrival.price)}
+        user_id = {"user_id": int(arrival.user_id)}
+        result.append([id, date, price, user_id])
+    return result
 
 
 def main():
