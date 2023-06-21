@@ -1,19 +1,15 @@
 import datetime
-from flask import Flask, render_template, redirect
+from flask import Flask
 from data import db_session
 from waitress import serve
-from flask_cors import CORS, cross_origin
-import requests
-
+from flask_cors import CORS
 from flask import jsonify
 
-from data.arrival import Arrival
-from forms.user import RegisterForm, LoginForm
-from forms.expends import ExpendsForm
-from forms.arrival import ArrivalsForm
+from forms.user import RegisterForm
 
 from data.users import User
 from data.expend import Expend
+from data.arrival import Arrival
 
 from flask_login import LoginManager, login_user
 
@@ -78,13 +74,14 @@ def valid_login_data(username, password):
     return jsonify('false')
 
 
-@app.route("/new_expend/<int:id>/<string:date>/<int:category>/<int:price>/<int:user_id>",
+@app.route("/new_expend/<int:id>/<string:title>/<string:category>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_expend(id, date, category, price, user_id):
+def new_expend(id, title, category, price, user_id):
     session = db_session.create_session()
     expend = Expend()
     expend.id = id
-    expend.date = date
+    expend.title = title
+    expend.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
     expend.category = category
     expend.price = price
     expend.user_id = user_id
@@ -119,6 +116,7 @@ def get_expend(user_id):
     for expend in expends:
         dic = {}
         dic["id"] = expend.id
+        dic["title"] = expend.title
         dic["date"] = expend.date
         dic["category"] = expend.category
         dic["price"] = expend.price
@@ -138,13 +136,14 @@ def get_expend_some(user_id):
     return jsonify(result)
 
 
-@app.route("/new_arrival/<int:id>/<string:date>/<int:price>/<int:user_id>",
+@app.route("/new_arrival/<int:id>/<string:title>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_arrival(id, date, price, user_id):
+def new_arrival(id, title, price, user_id):
     session = db_session.create_session()
     arrival = Arrival()
     arrival.id = id
-    arrival.date = date
+    arrival.title = title
+    arrival.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
     arrival.price = price
     arrival.user_id = user_id
     session.add(arrival)
@@ -160,6 +159,7 @@ def get_arrival(user_id):
     for arrival in arrivals:
         dic = {}
         dic["id"] = arrival.id
+        dic["title"] = arrival.title
         dic["date"] = arrival.date
         dic["price"] = arrival.price
         dic["user_id"] = arrival.user_id
@@ -176,6 +176,7 @@ def get_history(user_id):
     for arrival in arrivals:
         dic = {}
         dic["id"] = str(arrival.id)
+        dic["title"] = arrival.title
         dic["date"] = arrival.date
         dic["category"] = "Пополнение"
         dic["price"] = f'+{arrival.price}'
@@ -184,6 +185,7 @@ def get_history(user_id):
     for expend in expends:
         dic = {}
         dic["id"] = str(expend.id)
+        dic["title"] = expend.title
         dic["date"] = expend.date
         dic["category"] = str(expend.category)
         dic["price"] = f"-{expend.price}"

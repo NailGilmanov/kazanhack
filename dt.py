@@ -4,7 +4,7 @@ import datetime
 date_time_str = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
 date_time_obj = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
 
-print(date_time_obj)
+print(date_time_str)
 
 # подбор нужных функций
 
