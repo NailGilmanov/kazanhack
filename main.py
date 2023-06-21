@@ -104,10 +104,11 @@ def get_username(id):
 def get_user(id):
     db_sess = db_session.create_session()
     user = db_sess.query(User).filter(User.id == id).first()
-    userid = f'"id":{str(user.id)}, '
-    username = f'"name":"{str(user.name)}", '
-    userabout = f'"about":"{str(user.about)}"'
-    return '{' + userid + username + userabout + '}'
+    dic = {}
+    dic["id"] = user.id
+    dic["name"] = user.name
+    dic["about"] = user.about
+    return dic
 
 
 @app.route("/get_expend/<int:user_id>")
@@ -116,13 +117,14 @@ def get_expend(user_id):
     expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
     result = []
     for expend in expends:
-        id = {"id": int(expend.id)}
-        date = {"date":f"{expend.date}"}
-        category = {"category": int(expend.category)}
-        price = {"price": int(expend.price)}
-        user_id = {"user_id": int(expend.user_id)}
-        result.append([id, date, category, price, user_id])
-    return result
+        dic = {}
+        dic["id"] = expend.id
+        dic["date"] = expend.date
+        dic["category"] = expend.category
+        dic["price"] = expend.price
+        dic["user_id"] = expend.user_id
+        result.append(dic)
+    return jsonify(result)
 
 
 @app.route("/get_expend_some/<int:user_id>")
@@ -156,12 +158,13 @@ def get_arrival(user_id):
     arrivals = db_sess.query(Arrival).filter(Arrival.user_id == user_id).all()
     result = []
     for arrival in arrivals:
-        id = {"id": int(arrival.id)}
-        date = {"date":f"{arrival.date}"}
-        price = {"price": int(arrival.price)}
-        user_id = {"user_id": int(arrival.user_id)}
-        result.append([id, date, price, user_id])
-    return result
+        dic = {}
+        dic["id"] = arrival.id
+        dic["date"] = arrival.date
+        dic["price"] = arrival.price
+        dic["user_id"] = arrival.user_id
+        result.append(dic)
+    return jsonify(result)
 
 
 @app.route("/get_history/<int:user_id>")
