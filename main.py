@@ -106,17 +106,20 @@ def get_user(id):
     return [user.id, user.name, user.about]
 
 
-@app.route("/get_expend/<int:user_id>",
-           methods=['GET', 'POST'])
+@app.route("/get_expend/<int:user_id>")
 def get_expend(user_id):
     db_sess = db_session.create_session()
-    expend = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
-    id = {"id": int(expend.id)}
-    date = {"date":f"{expend.date}"}
-    category = {"category": int(expend.category)}
-    price = {"price": int(expend.price)}
-    user_id = {"user_id": int(expend.user_id)}
-    return id | date | category | price | user_id
+    expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
+    result = []
+    for expend in expends:
+        id = {"id": int(expend.id)}
+        date = {"date":f"{expend.date}"}
+        category = {"category": int(expend.category)}
+        price = {"price": int(expend.price)}
+        user_id = {"user_id": int(expend.user_id)}
+        result.append([id, date, category, price, user_id])
+    return result
+    # ЭТО СПИСОК СДЕЛАЙ FOR
 
 
 @app.route("/new_arrival/<int:id>/<string:date>/<int:price>/<int:user_id>",
