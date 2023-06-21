@@ -20,6 +20,7 @@ from flask_login import LoginManager, login_user
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'secret_key'
+app.config['JSON_AS_ASCII'] = False
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -175,16 +176,7 @@ def get_history(user_id):
         dic["user_id"] = str(expend.user_id)
         result.append(dic)
     result = sorted(result, key=lambda x: x["date"], reverse=True)
-    res = []
-    for i in result:
-        item = {}
-        item["id"] = i["id"]
-        item["date"] = i["date"]
-        item["category"] = i["category"]
-        item["price"] = i["price"]
-        item["user_id"] = i["user_id"]
-        print(item["category"])
-    return res
+    return result
 
 
 def main():
