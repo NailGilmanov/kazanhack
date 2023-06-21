@@ -13,7 +13,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-
+    about = sqlalchemy.Column(sqlalchemy.String)
     # устанавливает значение хэша пароля для переданной строки, нужна для регистрации пользователя
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

@@ -6,6 +6,7 @@ import requests
 
 from flask import jsonify
 
+from data.arrival import Arrival
 from forms.user import RegisterForm, LoginForm
 from forms.expends import ExpendsForm
 from forms.arrival import ArrivalsForm
@@ -38,8 +39,8 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/register/<string:username>/<string:password>/<string:password_again>', methods=['GET', 'POST'])
-def valid_register_data(username, password, password_again):
+@app.route('/register/<string:username>/<string:password>/<string:password_again>/<string:about>', methods=['GET', 'POST'])
+def valid_register_data(username, password, password_again, about):
     form = RegisterForm()
     if form.validate_on_submit():
         if password != password_again:
@@ -52,9 +53,9 @@ def valid_register_data(username, password, password_again):
 
     # Добавление в базу данных
     db_sess = db_session.create_session()
-    user = User(
-        name=username
-    )
+    user = User()
+    user.name = username
+    user.about = about
     user.set_password(password)
     db_sess.add(user)
     db_sess.commit()
@@ -98,17 +99,51 @@ def get_username(id):
     return user.name
 
 
-@app.route("/get_expend/<int:id>",
-           methods=['GET', 'POST'])
-def get_expend(id):
+@app.route('/get_user/<int:id>')
+def get_user(id):
     db_sess = db_session.create_session()
-    expend = db_sess.query(Expend).filter(Expend.id == id).first()
+    user = db_sess.query(User).filter(User.id == id).first()
+    return [user.id, user.name, user.about]
+
+
+@app.route("/get_expend/<int:user_id>",
+           methods=['GET', 'POST'])
+def get_expend(user_id):
+    db_sess = db_session.create_session()
+    expend = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
     id = {"id": int(expend.id)}
     date = {"date":f"{expend.date}"}
     category = {"category": int(expend.category)}
     price = {"price": int(expend.price)}
     user_id = {"user_id": int(expend.user_id)}
     return id | date | category | price | user_id
+
+
+@app.route("/new_arrival/<int:id>/<string:date>/<int:price>/<int:user_id>",
+           methods=['GET', 'POST'])
+def new_arrival(id, date, category, price, user_id):
+    session = db_session.create_session()
+    arrival = Arrival()
+    arrival.id = id
+    arrival.date = date
+    arrival.price = price
+    arrival.user_id = user_id
+    session.add(arrival)
+    session.commit()
+    return jsonify('true')
+    # print(form.errors)
+
+
+# @app.route("/get_arrival/<int:user_id>",
+#            methods=['GET', 'POST'])
+# def get_arrival(id):
+#     db_sess = db_session.create_session()
+#     arrival = db_sess.query(Expend).filter(Expend.id == id).first()
+#     id = {"id": int(arrival.id)}
+#     date = {"date":f"{arrival.date}"}
+#     price = {"price": int(arrival.price)}
+#     user_id = {"user_id": int(arrival.user_id)}
+#     return id | date | price | user_id
 
 
 def main():
