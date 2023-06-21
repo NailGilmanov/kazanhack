@@ -125,6 +125,17 @@ def get_expend(user_id):
     return result
 
 
+@app.route("/get_expend_some/<int:user_id>")
+def get_expend_some(user_id):
+    db_sess = db_session.create_session()
+    expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
+    result = 0
+    for expend in expends:
+        price = int(expend.price)
+        result += price
+    return jsonify(result)
+
+
 @app.route("/new_arrival/<int:id>/<string:date>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
 def new_arrival(id, date, price, user_id):
