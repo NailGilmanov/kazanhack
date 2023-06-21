@@ -74,12 +74,11 @@ def valid_login_data(username, password):
     return jsonify('false')
 
 
-@app.route("/new_expend/<int:id>/<string:title>/<string:category>/<int:price>/<int:user_id>",
+@app.route("/new_expend/<string:title>/<string:category>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_expend(id, title, category, price, user_id):
+def new_expend(title, category, price, user_id):
     session = db_session.create_session()
     expend = Expend()
-    expend.id = id
     expend.title = title
     expend.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
     expend.category = category
@@ -136,12 +135,11 @@ def get_expend_some(user_id):
     return jsonify(result)
 
 
-@app.route("/new_arrival/<int:id>/<string:title>/<int:price>/<int:user_id>",
+@app.route("/new_arrival/<string:title>/<int:price>/<int:user_id>",
            methods=['GET', 'POST'])
-def new_arrival(id, title, price, user_id):
+def new_arrival(title, price, user_id):
     session = db_session.create_session()
     arrival = Arrival()
-    arrival.id = id
     arrival.title = title
     arrival.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
     arrival.price = price
