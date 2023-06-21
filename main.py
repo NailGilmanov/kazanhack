@@ -193,6 +193,27 @@ def get_history(user_id):
     return result
 
 
+@app.route("/get_analitics/<int:user_id>")
+def get_analitics(user_id):
+    db_sess = db_session.create_session()
+    expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
+    res = {}
+    procent = {}
+    counter = 0
+    for expend in expends:
+        category = expend.category
+        price = expend.price
+        counter += price
+        if category not in res:
+            res[category] = price
+        elif category in res:
+            res[category] += price
+    for category in res:
+        proc = res[category] * 100 / counter
+        procent[category] = round(proc, 2)
+    return [procent, res]
+
+
 def main():
     db_session.global_init('db/database.sqlite')
     serve(app, host='127.0.0.1', port=5000)
