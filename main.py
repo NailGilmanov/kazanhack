@@ -159,20 +159,32 @@ def get_history(user_id):
     expends = db_sess.query(Expend).filter(Expend.user_id == user_id).all()
     result = []
     for arrival in arrivals:
-        id = str(arrival.id)
-        date = arrival.date
-        price = f'+{arrival.price}'
-        user_id = str(arrival.user_id)
-        result.append([id, date, price, user_id])
+        dic = {}
+        dic["id"] = str(arrival.id)
+        dic["date"] = arrival.date
+        dic["category"] = "Пополнение"
+        dic["price"] = f'+{arrival.price}'
+        dic["user_id"] = str(arrival.user_id)
+        result.append(dic)
     for expend in expends:
-        id = str(expend.id)
-        date = expend.date
-        category = str(expend.category)
-        price = f"-{expend.price}"
-        user_id = str(expend.user_id)
-        result.append([id, date, category, price, user_id])
-    result = sorted(result, key=lambda x: x[1], reverse=True)
-    return result
+        dic = {}
+        dic["id"] = str(expend.id)
+        dic["date"] = expend.date
+        dic["category"] = str(expend.category)
+        dic["price"] = f"-{expend.price}"
+        dic["user_id"] = str(expend.user_id)
+        result.append(dic)
+    result = sorted(result, key=lambda x: x["date"], reverse=True)
+    res = []
+    for i in result:
+        item = {}
+        item["id"] = i["id"]
+        item["date"] = i["date"]
+        item["category"] = i["category"]
+        item["price"] = i["price"]
+        item["user_id"] = i["user_id"]
+        print(item["category"])
+    return res
 
 
 def main():
