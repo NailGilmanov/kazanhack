@@ -79,9 +79,9 @@ def valid_login_data(username, password):
 def new_expend(title, category, price, user_id):
     session = db_session.create_session()
     expend = Expend()
-    expend.title = title
+    expend.title = title.capitalize()
     expend.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
-    expend.category = category
+    expend.category = category.capitalize()
     expend.price = price
     expend.user_id = user_id
     session.add(expend)
@@ -140,7 +140,7 @@ def get_expend_some(user_id):
 def new_arrival(title, price, user_id):
     session = db_session.create_session()
     arrival = Arrival()
-    arrival.title = title
+    arrival.title = title.capitalize()
     arrival.date = str(datetime.datetime.now().strftime('%d.%m.%Y %H:%M'))
     arrival.price = price
     arrival.user_id = user_id
@@ -211,7 +211,7 @@ def get_analitics(user_id):
     for category in res:
         proc = res[category] * 100 / counter
         procent[category] = round(proc, 2)
-    return [procent, res]
+    return procent
 
 
 def main():
