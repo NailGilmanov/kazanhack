@@ -39,15 +39,15 @@ def load_user(user_id):
 
 @app.route('/register/<string:username>/<string:password>/<string:password_again>/<string:about>', methods=['GET', 'POST'])
 def valid_register_data(username, password, password_again, about):
-    form = RegisterForm()
-    if form.validate_on_submit():
-        if password != password_again:
-            # Пароли не совпадают
-            return jsonify("false")
-        db_sess = db_session.create_session()
-        if db_sess.query(User).filter(User.name == username).first():
-            # Такой пользователь уже есть
-            return jsonify("false")
+    db_sess = db_session.create_session()
+
+    if password != password_again:
+        # Пароли не совпадают
+        return jsonify("false")
+
+    if db_sess.query(User).filter(User.name == username).first():
+        # Такой пользователь уже есть
+        return jsonify("false")
 
     # Добавление в базу данных
     db_sess = db_session.create_session()
@@ -211,12 +211,12 @@ def get_analitics(user_id):
     for category in res:
         proc = res[category] * 100 / counter
         procent[category] = round(proc, 2)
-    return [procent, res]
+    return procent
 
 
 def main():
     db_session.global_init('db/database.sqlite')
-    serve(app, host='127.0.0.1', port=5000)
+    serve(app, port=5000)
 
 
 if __name__ == '__main__':
